@@ -2,7 +2,7 @@ services:
   - type: web
     name: figurinapp
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn src.main:app
-    region: oregon
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn main:app --chdir src"
     plan: free
+    branch: main
