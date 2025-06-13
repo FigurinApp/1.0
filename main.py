@@ -16,3 +16,13 @@ def static_proxy(path):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+from database import conectar
+
+@app.route("/testar-banco")
+def testar_banco():
+    try:
+        conn = conectar()
+        conn.close()
+        return "Conexão com o banco de dados realizada com sucesso!"
+    except Exception as e:
+        return f"Erro na conexão: {e}"
