@@ -24,3 +24,27 @@ class Figurinha(db.Model):
     usuario_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     usuario = db.relationship('User', backref='figurinhas')
+from flask import request, redirect, url_for, flash
+from models import db, User
+from database import conectar
+
+@app.route('/cadastrar', methods=['POST'])
+def cadastrar():
+    nome = request.form['nome']
+    email = request.form['email']
+    senha = request.form['senha']
+
+    # Verificar se o e-mail já existe
+    if User.query.filter_by(email=email).first():
+        return "Este e-mail já está cadastrado."
+
+    # Criar novo usuário
+    novo_usuario = User(nome=nome, email=email)
+    novo_usuario.set_senha(senha)
+
+    try:
+        db.session.add(novo_usuario)
+        db.session.commit()
+        return "Cadastro realizado com sucesso!"
+    except Exception as e:
+        return f"Erro ao cadastrar: {e}"
