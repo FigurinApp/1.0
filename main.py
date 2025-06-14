@@ -1,16 +1,11 @@
-from flask import Flask, send_from_directory, render_template
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask_bcrypt import Bcrypt
 from database import conectar
-from models import db
+from models import User
 import os
 
 app = Flask(__name__, static_folder='../static', template_folder='templates')
-
-# Configuração do SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:5kzDjoQ1FdiaUZfzBVismFY2SFFQuHsl@dpg-d1682numcj7s73bdlp3g-a.oregon-postgres.render.com/figurinapp'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Inicializar o banco com a aplicação
-db.init_app(app)
+bcrypt = Bcrypt(app)
 
 @app.route('/')
 def index():
@@ -32,9 +27,27 @@ def testar_banco():
     except Exception as e:
         return f"Erro na conexão: {e}"
 
-# Criar as tabelas automaticamente ao iniciar
-with app.app_context():
-    db.create_all()
+@app.route('/cadastrar', methods=['POST'])
+def cadastrar():
+    nome = request.form['nome']
+    email = request.form['email']
+    senha = request.form['senha']
+    
+    senha_hash = bcrypt.generate_password_hash(senha).decode('utf-8')
+
+    try:
+        conn = conectar()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO users (nome, email, senha) VALUES (%s, %s, %s)",
+            (nome, email, senha_hash)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('index'))
+    except Exception as e:
+        return f"Erro ao cadastrar usuário: {e}"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
