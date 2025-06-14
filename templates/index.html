@@ -42,15 +42,18 @@
       width: 100%;
       border-radius: 6px;
       font-size: 1rem;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <h1>FigurinApp</h1>
   <div class="box">
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Senha">
-    <button>Entrar</button>
+    <form method="post" action="/login">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+    </form>
   </div>
 </body>
 </html>
