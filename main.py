@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 bcrypt = Bcrypt(app)
 
-# Cria as tabelas no banco se ainda não existirem
+# Cria as tabelas se ainda não existirem
 with app.app_context():
     db.create_all()
 
@@ -33,13 +33,13 @@ def testar_banco():
     except Exception as e:
         return f"Erro na conexão: {e}"
 
-@app.route('/cadastrar', methods=['POST'])  # ✅ Decorador adicionado aqui
+# 🚨 ESTA ROTA AGORA ACEITA POST
+@app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     nome = request.form['nome']
     email = request.form['email']
     senha = request.form['senha']
 
-    # Verifica se e-mail já está cadastrado
     if User.query.filter_by(email=email).first():
         return "Este e-mail já está cadastrado."
 
