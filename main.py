@@ -33,7 +33,7 @@ def testar_banco():
     except Exception as e:
         return f"Erro na conexão: {e}"
 
-@app.route('/cadastrar', methods=['POST'])
+@app.route('/cadastrar', methods=['POST'])  # ✅ Decorador adicionado aqui
 def cadastrar():
     nome = request.form['nome']
     email = request.form['email']
