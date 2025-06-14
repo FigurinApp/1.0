@@ -1,23 +1,29 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flask_bcrypt import Bcrypt
+from flask_sqlalchemy import SQLAlchemy
 from models import db, User
 import os
 
-app = Flask(__name__, static_folder='../static', template_folder='templates')
+app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# Configuração da conexão com o banco PostgreSQL no Render
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:5kzDjoQ1FdiaUZfzBVismFY2SFFQuHsl@dpg-d1682numcj7s73bdlp3g-a.oregon-postgres.render.com/figurinapp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Inicializar extensões
 db.init_app(app)
 bcrypt = Bcrypt(app)
 
-# Cria as tabelas se ainda não existirem
+# Criar as tabelas no banco de dados
 with app.app_context():
     db.create_all()
 
+# Página inicial com formulário de login
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Rota para arquivos estáticos
 @app.route('/<path:path>')
 def static_proxy(path):
     file_path = os.path.join(app.static_folder, path)
@@ -25,6 +31,7 @@ def static_proxy(path):
         return send_from_directory(app.static_folder, path)
     return render_template('index.html')
 
+# Rota para testar conexão com o banco
 @app.route('/testar-banco')
 def testar_banco():
     try:
@@ -33,7 +40,7 @@ def testar_banco():
     except Exception as e:
         return f"Erro na conexão: {e}"
 
-# 🚨 ESTA ROTA AGORA ACEITA POST
+# Rota para cadastro de usuário
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     nome = request.form['nome']
@@ -53,5 +60,19 @@ def cadastrar():
     except Exception as e:
         return f"Erro ao cadastrar usuário: {e}"
 
+# Rota de login
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    senha = request.form['senha']
+
+    usuario = User.query.filter_by(email=email).first()
+
+    if usuario and usuario.check_senha(senha):
+        return redirect(url_for('index'))  # Você pode alterar para /painel futuramente
+    else:
+        return "Email ou senha inválidos."
+
+# Execução local
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
