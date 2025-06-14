@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flask_bcrypt import Bcrypt
-from database import conectar
-from models import User
+from models import db, User
 import os
 
 app = Flask(__name__, static_folder='../static', template_folder='templates')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:5kzDjoQ1FdiaUZfzBVismFY2SFFQuHsl@dpg-d1682numcj7s73bdlp3g-a.oregon-postgres.render.com/figurinapp'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
 bcrypt = Bcrypt(app)
+
+# Cria as tabelas no banco se ainda não existirem
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -21,8 +28,7 @@ def static_proxy(path):
 @app.route('/testar-banco')
 def testar_banco():
     try:
-        conn = conectar()
-        conn.close()
+        db.session.execute('SELECT 1')
         return "Conexão com o banco de dados realizada com sucesso!"
     except Exception as e:
         return f"Erro na conexão: {e}"
@@ -32,19 +38,17 @@ def cadastrar():
     nome = request.form['nome']
     email = request.form['email']
     senha = request.form['senha']
-    
-    senha_hash = bcrypt.generate_password_hash(senha).decode('utf-8')
+
+    # Verifica se e-mail já está cadastrado
+    if User.query.filter_by(email=email).first():
+        return "Este e-mail já está cadastrado."
+
+    novo_usuario = User(nome=nome, email=email)
+    novo_usuario.set_senha(senha)
 
     try:
-        conn = conectar()
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO users (nome, email, senha) VALUES (%s, %s, %s)",
-            (nome, email, senha_hash)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
+        db.session.add(novo_usuario)
+        db.session.commit()
         return redirect(url_for('index'))
     except Exception as e:
         return f"Erro ao cadastrar usuário: {e}"
