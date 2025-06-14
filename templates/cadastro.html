@@ -2,53 +2,57 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro</title>
+  <title>Cadastro - FigurinApp</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f8bbd0;
+      background: linear-gradient(to bottom, #fce4ec, #f8bbd0);
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       margin: 0;
     }
-    .form-container {
+    h1 {
+      color: #d81b60;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .box {
       background: white;
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
-    }
-    h2 {
-      text-align: center;
-      color: #d81b60;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
     }
     input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
     }
     button {
-      width: 100%;
       background-color: #d81b60;
       color: white;
       border: none;
-      padding: 10px;
-      border-radius: 4px;
+      padding: 0.75rem;
+      width: 100%;
+      border-radius: 6px;
+      font-size: 1rem;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Cadastro</h2>
-    <form action="/cadastrar" method="post">
-      <input type="text" name="nome" placeholder="Nome" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="senha" placeholder="Senha" required>
+  <h1>FigurinApp</h1>
+  <div class="box">
+    <form method="post" action="/cadastrar">
+      <input type="text" name="nome" placeholder="Nome completo" required>
+      <input type="email" name="email" placeholder="Digite seu e-mail" required>
+      <input type="password" name="senha" placeholder="Digite sua senha" required>
       <button type="submit">Cadastrar</button>
     </form>
   </div>
