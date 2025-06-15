@@ -1,60 +1,21 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Cadastro - FigurinApp</title>
-  <style>
-    body {
-      background: linear-gradient(to bottom, #fce4ec, #f8bbd0);
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    h1 {
-      color: #d81b60;
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-    .box {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      background-color: #d81b60;
-      color: white;
-      border: none;
-      padding: 0.75rem;
-      width: 100%;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <h1>FigurinApp</h1>
-  <div class="box">
-    <form method="post" action="/cadastro">
-      <input type="text" name="nome" placeholder="Nome completo" required>
-      <input type="email" name="email" placeholder="Digite seu e-mail" required>
-      <input type="password" name="senha" placeholder="Digite sua senha" required>
-      <button type="submit">Cadastrar</button>
-    </form>
-  </div>
-</body>
-</html>
+@app.route("/cadastro", methods=["GET", "POST"])
+def cadastro():
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+        senha = request.form["senha"]
+
+        usuario_existente = User.query.filter_by(email=email).first()
+        if usuario_existente:
+            flash("E-mail já cadastrado. Tente outro.")
+            return redirect(url_for("cadastro"))
+
+        senha_criptografada = generate_password_hash(senha)
+        novo_usuario = User(nome=nome, email=email, senha=senha_criptografada)
+        db.session.add(novo_usuario)
+        db.session.commit()
+
+        flash("Usuário cadastrado com sucesso!")
+        return redirect(url_for("index"))
+
+    return render_template("cadastro.html")
