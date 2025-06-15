@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
@@ -9,8 +8,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
 
-    def set_senha(self, senha_plana):
-        self.senha = generate_password_hash(senha_plana).decode('utf-8')
+    def set_senha(self, senha_plana, bcrypt):
+        self.senha = bcrypt.generate_password_hash(senha_plana).decode('utf-8')
 
-    def check_senha(self, senha_plana):
-        return check_password_hash(self.senha, senha_plana)
+    def check_senha(self, senha_plana, bcrypt):
+        return bcrypt.check_password_hash(self.senha, senha_plana)
