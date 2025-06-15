@@ -5,7 +5,7 @@ from models import db, User
 import os
 
 app = Flask(__name__)
-app.secret_key = 'figurinapp-secret-key'  # Necessário para usar flash()
+app.secret_key = 'figurinapp-secret-key'
 
 # Config do banco PostgreSQL (Render)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:dFY4vaX6yNog0BLJk3yulfzmfFToMVmK@dpg-d17f842dbo4c73fsdm8g-a.oregon-postgres.render.com/figurinapp_7k03'
