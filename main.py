@@ -88,4 +88,4 @@ def testar_banco():
         return f"Erro: {str(e)}"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5
+    app.run(host='0.0.0.0', port=5000)
