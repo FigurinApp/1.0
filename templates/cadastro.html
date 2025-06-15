@@ -72,20 +72,45 @@
     .voltar a:hover {
       text-decoration: underline;
     }
+
+    .senha-container {
+      position: relative;
+    }
+
+    .senha-container span {
+      position: absolute;
+      right: 12px;
+      top: 14px;
+      cursor: pointer;
+    }
+
+    ul {
+      color: red;
+      margin-top: 0;
+      padding-left: 18px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Cadastro</h2>
+
+    {% with mensagens = get_flashed_messages() %}
+      {% if mensagens %}
+        <ul>
+          {% for msg in mensagens %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <form method="POST" action="/cadastrar">
       <input type="text" name="nome" placeholder="Nome completo" required>
       <input type="email" name="email" placeholder="E-mail" required>
-      <input type="password" name="senha" placeholder="Senha" required>
+      <div class="senha-container">
+        <input type="password" name="senha" id="senha" placeholder="Senha" required>
+        <span onclick="toggleSenha()">👁️</span>
+      </div>
       <button type="submit">Cadastrar</button>
-    </form>
-    <div class="voltar">
-      <p>Já tem conta? <a href="/">Fazer login</a></p>
-    </div>
-  </div>
-</body>
-</html>
+    </form
