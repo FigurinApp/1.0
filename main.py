@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User
+from models import db, User, bcrypt
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar extensões
 db.init_app(app)
-bcrypt = Bcrypt(app)
+bcrypt.init_app(app)
 
 # Criar as tabelas no banco de dados
 with app.app_context():
@@ -80,4 +80,4 @@ def static_proxy(path):
 
 # Execução local
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
