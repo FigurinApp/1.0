@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = 'chave_secreta_segura_do_figurinapp'
 
 # ✅ Conexão com o banco PostgreSQL do Render — COM SSL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:SENHA_DO_SEU_BANCO@dpg-d1682numcj7s73bdlp3g-a.oregon-postgres.render.com/figurinapp?sslmode=require'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:5kzDjoQ1FdiaUZfzBVismFY2SFFQuHsl@dpg-d1682numcj7s73bdlp3g-a.oregon-postgres.render.com/figurinapp?sslmode=require'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar banco e criptografia
