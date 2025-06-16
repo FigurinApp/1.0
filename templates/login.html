@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - FigurinApp</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #00796b;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .toggle-senha {
+      position: absolute;
+      right: 10px;
+      top: 38px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #00796b;
+    }
+    .senha-container {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <h2>Login</h2>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li style="color:red;">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="/login">
+    <input type="email" name="email" placeholder="Seu e-mail" required>
+    
+    <div class="senha-container">
+      <input type="password" name="senha" id="senha" placeholder="Sua senha" required>
+      <button type="button" class="toggle-senha" onclick="toggleSenha()">👁️</button>
+    </div>
+
+    <button type="submit">Entrar</button>
+  </form>
+
+  <script>
+    function toggleSenha() {
+      const campo = document.getElementById('senha');
+      campo.type = campo.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+</body>
+</html>
