@@ -1,28 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from models import db, User
 import os
 
 app = Flask(__name__)
-app.secret_key = 'figurinapp-secret-key'  # Necessário para flash() e login
+app.secret_key = 'figurinapp-secret-key'  # Para usar flash()
 
-# Config do banco PostgreSQL (Render)
+# Configuração do banco PostgreSQL (Render)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:dFY4vaX6yNog0BLJk3yulfzmfFToMVmK@dpg-d17f842dbo4c73fsdm8g-a.oregon-postgres.render.com/figurinapp_7k03'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
-
-# Config login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'index'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 with app.app_context():
     db.create_all()
@@ -53,10 +43,14 @@ def cadastrar():
         db.session.commit()
 
         flash('Usuário cadastrado com sucesso!')
-        return redirect(url_for('index'))
+        return redirect(url_for('exibir_login'))
 
     except Exception as e:
         return f"Erro ao cadastrar: {str(e)}"
+
+@app.route('/login', methods=['GET'])
+def exibir_login():
+    return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -65,22 +59,14 @@ def login():
     usuario = User.query.filter_by(email=email).first()
 
     if usuario and usuario.check_senha(senha):
-        login_user(usuario)
         return redirect(url_for('painel'))
     else:
-        flash('E-mail ou senha inválidos.')
-        return redirect(url_for('index'))
+        flash("E-mail ou senha inválidos.")
+        return redirect(url_for('exibir_login'))
 
 @app.route('/painel')
-@login_required
 def painel():
-    return render_template('painel/painel.html', usuario=current_user)
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
+    return render_template('painel.html')
 
 @app.route('/testar-banco')
 def testar_banco():
